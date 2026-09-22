@@ -1,4 +1,4 @@
-APP_NAME := sixseven
+APP_NAME := pacseed
 BIN_DIR  := bin
 
 .PHONY: build run clean
