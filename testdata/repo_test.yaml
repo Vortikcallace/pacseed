@@ -1,0 +1,10 @@
+repos:
+  - name: osu-lazer
+    aur: true
+    version: "12.3.5"
+  - name: neovim
+    aur: false
+    version: "0.10.0"
+  - name: docker-desktop
+    aur: true
+    version: "4.83.0-1"

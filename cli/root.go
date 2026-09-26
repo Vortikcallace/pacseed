@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"pacseed/internal/config"
 	"pacseed/internal/logger"
 
 	"github.com/spf13/cobra"
@@ -18,6 +19,8 @@ var rootCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.InitLogger("info", "text")
+		config.LoadConfig()
+		fmt.Println("Welcome to pacseed! It's a tool for managing your Arch Linux packages.")
 	},
 }
 
