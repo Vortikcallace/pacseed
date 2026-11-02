@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
+	"path/filepath"
 
 	"pacseed/internal/config/models"
 
@@ -11,13 +13,20 @@ import (
 )
 
 var UConfig *models.Config
+var ConfigPath string
+var ConfigName string
 
 var ErrRepoNotFound = errors.New("repo not found")
 
+func init() {
+	ConfigPath = "./testdata/mytestdata"
+	ConfigName = "my_template"
+}
+
 func LoadConfig() {
-	viper.SetConfigName("my_template")
+	viper.SetConfigName(ConfigName)
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./testdata/mytestdata")
+	viper.AddConfigPath(ConfigPath)
 
 	if err := viper.ReadInConfig(); err != nil {
 		slog.Error("Error reading config file", "error", err)
@@ -31,18 +40,45 @@ func LoadConfig() {
 	}
 
 	UConfig = &ucfg
-	slog.Debug("Config loaded successfully",
-		"path", viper.ConfigFileUsed(),
-		"repos", len(ucfg.Repos),
-	)
+	slog.Debug("Config loaded successfully", "path", viper.ConfigFileUsed(), "repos", len(ucfg.Repos))
 }
 
-func saveConfig() error {
-	if err := viper.WriteConfig(); err != nil {
-		slog.Error("Error writing config file", "error", err)
-		return err
+func SaveConfig() error {
+	if UConfig == nil {
+		return errors.New("nothing to save")
 	}
-	slog.Debug("Config saved successfully")
+
+	if ConfigPath == "" {
+		ConfigPath, _ = os.UserHomeDir()
+	}
+	if ConfigName == "" {
+		ConfigName = "repos"
+	}
+
+	fullPath := filepath.Join(ConfigPath, ConfigName+".yaml")
+
+	if _, err := os.Stat(fullPath); err == nil {
+		fmt.Printf("File %s already exists. Overwrite? [y/N]: ", fullPath)
+		var response string
+		fmt.Scanln(&response)
+		if response != "y" && response != "Y" {
+			return errors.New("aborted by user")
+		}
+	}
+
+	viper.SetConfigName(ConfigName)
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(ConfigPath)
+
+	if err := viper.MergeConfigMap(map[string]interface{}{"repos": UConfig.Repos}); err != nil {
+		return fmt.Errorf("failed to merge config: %w", err)
+	}
+
+	if err := viper.WriteConfigAs(fullPath); err != nil {
+		return fmt.Errorf("failed to write config: %w", err)
+	}
+
+	slog.Debug("Config saved successfully", "path", fullPath)
 	return nil
 }
 
@@ -96,7 +132,6 @@ func PrintRepo(name string) {
 
 	fmt.Printf("name:    %s\n", r.Name)
 	fmt.Printf("source:  %s\n", source)
-	fmt.Printf("version: %s\n", r.Version)
 }
 
 func PrintRepos() {
@@ -112,7 +147,7 @@ func PrintRepos() {
 			source = "AUR"
 		}
 
-		fmt.Printf("[%d] %s (%s) v%s\n", i+1, r.Name, source, r.Version)
+		fmt.Printf("[%d] %s (%s)\n", i+1, r.Name, source)
 	}
 }
 
@@ -124,6 +159,6 @@ func PrintAURRepos() {
 	}
 
 	for i, r := range repos {
-		fmt.Printf("[%d] %s v%s\n", i+1, r.Name, r.Version)
+		fmt.Printf("[%d] %s\n", i+1, r.Name)
 	}
 }
