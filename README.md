@@ -47,9 +47,3 @@ After a successful build, you can run the tool using:
         ./bin/pacseed check --aur
         ./bin/pacseed check --repo "package-name"
       ```
-
-*   **`generate`**
-    Generates a basic `PKGBUILD` template for custom packages.
-      ```
-        ./bin/pacseed generate --name "my-package"
-      ```
