@@ -27,7 +27,7 @@ var compileCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Starting compilation...")
 
-		officialOut, err := exec.ExecuteCommand("pacman", "-Qqn")
+		officialOut, err := exec.ExecuteCommandCompile("pacman", "-Qqn")
 		if err != nil {
 			slog.Error("Failed to get official packages", "error", err)
 			fmt.Println("compilation failed")

@@ -30,10 +30,10 @@ func NewAurManager() (*AurManager, error) {
 }
 
 func (m *AurManager) GetHelper() string {
-	if _, err := exec.ExecuteCommand("which", "yay"); err == nil {
+	if _, err := exec.ExecuteCommandRestore("which", "yay"); err == nil {
 		return "yay"
 	}
-	if _, err := exec.ExecuteCommand("which", "paru"); err == nil {
+	if _, err := exec.ExecuteCommandRestore("which", "paru"); err == nil {
 		return "paru"
 	}
 	return ""
@@ -61,12 +61,12 @@ func (m *AurManager) InstallHelper() (string, error) {
 	tmpDir := fmt.Sprintf("/tmp/%s_build", helper)
 	os.RemoveAll(tmpDir)
 
-	_, err := exec.ExecuteCommand("git", "clone", fmt.Sprintf("https://aur.archlinux.org/%s.git", helper), tmpDir)
+	_, err := exec.ExecuteCommandRestore("git", "clone", fmt.Sprintf("https://aur.archlinux.org/%s.git", helper), tmpDir)
 	if err != nil {
 		return "", fmt.Errorf("failed to clone: %w", err)
 	}
 
-	_, err = exec.ExecuteCommand("sh", "-c", fmt.Sprintf("cd %s && makepkg -si --noconfirm", tmpDir))
+	_, err = exec.ExecuteCommandRestore("sh", "-c", fmt.Sprintf("cd %s && makepkg -si --noconfirm", tmpDir))
 	if err != nil {
 		return "", fmt.Errorf("failed to build: %w", err)
 	}

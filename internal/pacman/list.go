@@ -8,7 +8,7 @@ import (
 )
 
 func GetOfficialPackages() ([]string, error) {
-	out, err := exec.ExecuteCommand("pacman", "-Qqn")
+	out, err := exec.ExecuteCommandCompile("pacman", "-Qqn")
 	if err != nil {
 		return nil, fmt.Errorf("pacman -Qqn failed: %w", err)
 	}

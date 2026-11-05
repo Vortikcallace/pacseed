@@ -22,7 +22,7 @@ func (m *AurManager) Install(name string) error {
 		return fmt.Errorf("cannot install %s: no AUR helper configured", name)
 	}
 
-	_, err := exec.ExecuteCommand(m.binPath, "-S", "--noconfirm", "--needed", name)
+	_, err := exec.ExecuteCommandRestore(m.binPath, "-S", "--noconfirm", "--needed", name)
 	if err != nil {
 		return fmt.Errorf("failed to install %s via %s: %w", name, m.binPath, err)
 	}

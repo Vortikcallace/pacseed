@@ -8,7 +8,7 @@ import (
 )
 
 func GetAURPackages() ([]string, error) {
-	out, err := exec.ExecuteCommand("pacman", "-Qqm")
+	out, err := exec.ExecuteCommandCompile("pacman", "-Qqm")
 	if err != nil {
 		return nil, fmt.Errorf("pacman -Qqm failed: %w", err)
 	}
