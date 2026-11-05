@@ -3,6 +3,7 @@ package exec
 import (
 	"fmt"
 	"log/slog"
+	"os"
 	"os/exec"
 )
 
@@ -13,12 +14,16 @@ func ExecuteCommand(args ...string) (string, error) {
 	}
 
 	cmd := exec.Command(args[0], args[1:]...)
-	output, err := cmd.CombinedOutput()
+
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
 	if err != nil {
-		return string(output), fmt.Errorf("failed to execute %s: %w", args[0], err)
+		return "", fmt.Errorf("failed to execute %s: %w", args[0], err)
 	}
 
 	slog.Debug("command executed successfully")
-	fmt.Printf("Output:\n%s", string(output))
-	return string(output), nil
+	return "", nil
 }

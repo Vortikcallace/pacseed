@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"pacseed/internal/config"
 	"pacseed/internal/logger"
 
 	"github.com/spf13/cobra"
@@ -24,11 +23,10 @@ var rootCmd = &cobra.Command{
 			level = "debug"
 		}
 		logger.InitLogger(level, "text")
-		config.LoadConfig()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		slog.Debug("welcome message, root command entered")
-		fmt.Println("Welcome to pacseed! It's a tool for managing your Arch Linux packages.")
+		fmt.Println("Welcome to E-pacseed! It's a tool for managing your Arch Linux packages.")
 	},
 }
 

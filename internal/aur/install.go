@@ -2,50 +2,30 @@ package aur
 
 import (
 	"fmt"
+	"strings"
 
-	"pacseed/internal/config"
 	"pacseed/internal/exec"
 )
 
-func InstallAURPackages() error {
-	if config.UConfig == nil {
-		return fmt.Errorf("config not loaded")
+func (m *AurManager) Install(name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return fmt.Errorf("package name cannot be empty")
+	}
+	if strings.HasPrefix(name, "-") {
+		return fmt.Errorf("invalid package name %s: names cannot start with a dash", name)
 	}
 
-	repos := config.UConfig.Repos
-	if len(repos) == 0 {
-		fmt.Println("Manifest is empty.")
-		return nil
+	fmt.Printf("Installing AUR package: %s\n", name)
+
+	if m.binPath == "" {
+		return fmt.Errorf("cannot install %s: no AUR helper configured", name)
 	}
 
-	helper := GetHelper()
-	hasAUR := false
-	for _, r := range repos {
-		if r.AUR {
-			hasAUR = true
-			break
-		}
+	_, err := exec.ExecuteCommand(m.binPath, "-S", "--noconfirm", "--needed", name)
+	if err != nil {
+		return fmt.Errorf("failed to install %s via %s: %w", name, m.binPath, err)
 	}
 
-	if hasAUR && helper == "" {
-		var err error
-		helper, err = InstallHelper()
-		if err != nil {
-			return fmt.Errorf("failed to setup AUR helper: %w", err)
-		}
-	}
-
-	for _, repo := range repos {
-		if repo.AUR {
-			fmt.Printf("Installing AUR package: %s\n", repo.Name)
-			if helper == "" {
-				return fmt.Errorf("cannot install %s: no AUR helper", repo.Name)
-			}
-			_, err := exec.ExecuteCommand(helper, "-S", "--noconfirm", repo.Name)
-			if err != nil {
-				return fmt.Errorf("failed to install %s: %w", repo.Name, err)
-			}
-		}
-	}
 	return nil
 }

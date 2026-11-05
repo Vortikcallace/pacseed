@@ -18,29 +18,26 @@ var ConfigName string
 
 var ErrRepoNotFound = errors.New("repo not found")
 
-func init() {
-	ConfigPath = "./testdata/mytestdata"
-	ConfigName = "my_template"
-}
+func LoadConfig(cfgname string, cfgpath string) error {
+	ConfigName = cfgname
+	ConfigPath = cfgpath
 
-func LoadConfig() {
 	viper.SetConfigName(ConfigName)
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(ConfigPath)
 
 	if err := viper.ReadInConfig(); err != nil {
-		slog.Error("Error reading config file", "error", err)
-		return
+		return fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	var ucfg models.Config
 	if err := viper.Unmarshal(&ucfg); err != nil {
-		slog.Error("Error parsing config", "error", err)
-		return
+		return fmt.Errorf("failed to parse config: %w", err)
 	}
 
 	UConfig = &ucfg
 	slog.Debug("Config loaded successfully", "path", viper.ConfigFileUsed(), "repos", len(ucfg.Repos))
+	return nil
 }
 
 func SaveConfig() error {

@@ -2,15 +2,36 @@ package pacman
 
 import (
 	"fmt"
+	"strings"
 
 	"pacseed/internal/exec"
 )
 
-func InstallOfficialPackage(name string) error {
-	fmt.Printf("Installing official package: %s\n", name)
-	_, err := exec.ExecuteCommand("sudo", "pacman", "-S", "--noconfirm", name)
-	if err != nil {
-		return fmt.Errorf("failed to install %s: %w", name, err)
+type PacmanManager struct {
+	binPath string
+}
+
+func NewPacmanManager() *PacmanManager {
+	return &PacmanManager{
+		binPath: "pacman",
 	}
+}
+
+func (m *PacmanManager) Install(name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return fmt.Errorf("package name cannot be empty")
+	}
+	if strings.HasPrefix(name, "-") {
+		return fmt.Errorf("invalid package name %s: names cannot start with a dash", name)
+	}
+
+	fmt.Printf("Installing official package: %s\n", name)
+
+	_, err := exec.ExecuteCommand("sudo", m.binPath, "-S", "--noconfirm", name)
+	if err != nil {
+		return fmt.Errorf("failed to install %s via pacman: %w", name, err)
+	}
+
 	return nil
 }

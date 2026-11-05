@@ -9,7 +9,27 @@ import (
 	"pacseed/internal/exec"
 )
 
-func GetHelper() string {
+type AurManager struct {
+	binPath string
+}
+
+func NewAurManager() (*AurManager, error) {
+	m := &AurManager{}
+
+	helper := m.GetHelper()
+	if helper == "" {
+		var err error
+		helper, err = m.InstallHelper()
+		if err != nil {
+			return nil, fmt.Errorf("failed to setup AUR helper: %w", err)
+		}
+	}
+
+	m.binPath = helper
+	return m, nil
+}
+
+func (m *AurManager) GetHelper() string {
 	if _, err := exec.ExecuteCommand("which", "yay"); err == nil {
 		return "yay"
 	}
@@ -19,7 +39,7 @@ func GetHelper() string {
 	return ""
 }
 
-func InstallHelper() (string, error) {
+func (m *AurManager) InstallHelper() (string, error) {
 	fmt.Println("No AUR helper found (yay or paru).\nChoose AUR helper to install:\n[1] yay\n[2] paru")
 
 	reader := bufio.NewReader(os.Stdin)

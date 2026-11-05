@@ -22,6 +22,7 @@ var checkCmd = &cobra.Command{
 	Short: "info about repos",
 	Long:  `info about repos, you can check a specific repo by name or aur repos`,
 	Run: func(cmd *cobra.Command, args []string) {
+		config.LoadConfig(nameC, pathC)
 		if !repos && !aur && strings.TrimSpace(repo) == "" {
 			fmt.Println("no repo specified, use --repos or --aur to list all repos, or --repo to check a specific repo")
 			slog.Debug("no flags")
@@ -49,5 +50,9 @@ func init() {
 	checkCmd.Flags().StringVarP(&pathC, "path", "p", "", "path to config")
 	checkCmd.Flags().StringVarP(&nameC, "name", "n", "", "name of the config")
 	checkCmd.Flags().StringVar(&repo, "repo", "", "check a specific repo by name")
+
+	_ = restoreCmd.MarkFlagRequired("path")
+	_ = restoreCmd.MarkFlagRequired("name")
+
 	rootCmd.AddCommand(checkCmd)
 }
