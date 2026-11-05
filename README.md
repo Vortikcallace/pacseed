@@ -1,4 +1,4 @@
-# e-pacseed
+# E-pacseed
 
 E-pacseed is a declarative system building and restoring tool for Arch Linux. It allows users to describe their target system state (packages from official repositories and AUR) in a simple YAML manifest, and then apply this state to any machine without manual intervention. It eliminates configuration drift and makes system reproducibility easy.
 
@@ -46,10 +46,4 @@ After a successful build, you can run the tool using:
         ./bin/pacseed check --repos
         ./bin/pacseed check --aur
         ./bin/pacseed check --repo "package-name"
-      ```
-
-*   **`generate`**
-    Generates a basic `PKGBUILD` template for custom packages.
-      ```
-        ./bin/pacseed generate --name "my-package"
       ```
