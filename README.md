@@ -20,30 +20,35 @@ make clean
 ```
 ## Usage
 
-After a successful build, you can run the tool using:
+After a successful build, you can use the tool from terminal:
 ```
-./bin/pacseed [command]
+sudo cp ./bin/pacseed /usr/local/bin/pacseed
+```
+
+After it, you can use pacseed from terminal:
+```
+pacseed [command]
 ```
 ### Commands
 
 *   **`compile`**
     Scans your currently installed packages and generates a YAML manifest.
         ```
-        ./bin/pacseed compile --path "path/to/save" --name "my-config"
+        .pacseed compile --path "path/to/save" --name "my-config"
         ```
     *(If `--path` is not provided, it saves to your home directory. If `--name` is not provided, it defaults to `repos`.)*
 
 *   **`restore`**
     Reads the specified YAML manifest and installs all listed packages. It automatically checks for an AUR helper (yay or paru) and offers to install one if missing.
         ```
-        ./bin/pacseed restore --path "path/to/config" --name "my-config"
+        .pacseed restore --path "path/to/config" --name "my-config"
         ```
     *(Both `--path` and `--name` are required for this command).*
 
 *   **`check`**
     Validates the configuration file and provides information about the repositories listed in the manifest.
       ```
-        ./bin/pacseed check --repos
-        ./bin/pacseed check --aur
-        ./bin/pacseed check --repo "package-name"
+        pacseed check --name "repos" --path "/your full path/" --repos
+        pacseed check --name "repos" --path "/your full path/" --aur
+        pacseed check --name "repos" --path "/your full path/" --repo "package-name"
       ```
