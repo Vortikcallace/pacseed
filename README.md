@@ -34,14 +34,14 @@ pacseed [command]
 *   **`compile`**
     Scans your currently installed packages and generates a YAML manifest.
         ```
-        .pacseed compile --path "path/to/save" --name "my-config"
+        pacseed compile --path "path/to/save" --name "my-config"
         ```
     *(If `--path` is not provided, it saves to your home directory. If `--name` is not provided, it defaults to `repos`.)*
 
 *   **`restore`**
     Reads the specified YAML manifest and installs all listed packages. It automatically checks for an AUR helper (yay or paru) and offers to install one if missing.
         ```
-        .pacseed restore --path "path/to/config" --name "my-config"
+        pacseed restore --path "path/to/config" --name "my-config"
         ```
     *(Both `--path` and `--name` are required for this command).*
 
