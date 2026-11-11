@@ -28,7 +28,7 @@ func (m *PacmanManager) Install(name string) error {
 
 	fmt.Printf("Installing official package: %s\n", name)
 
-	_, err := exec.ExecuteCommandRestore("sudo", m.binPath, "-S", "--noconfirm", name)
+	_, err := exec.ExecuteCommandRestore("sudo", m.binPath, "-S", "--noconfirm", "--needed", name)
 	if err != nil {
 		return fmt.Errorf("failed to install %s via pacman: %w", name, err)
 	}
