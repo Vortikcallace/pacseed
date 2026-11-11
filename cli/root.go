@@ -32,6 +32,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "enable debug logging")
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
 }
 
 func Execute() {
